@@ -2,8 +2,15 @@ import { Button } from "../@/components/ui/button"
 import { Input } from "../@/components/ui/input"
 import { MapPin, Clock, Bell, Smartphone, Menu } from "lucide-react"
 // import {Link} from "react-router-dom"
-
+import { useNavigate } from "react-router-dom"
 export default function Landing() {
+
+  const navigate=useNavigate()
+
+  const scrollToSection = () => {
+    document.getElementById("howitworks")?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center">
@@ -15,9 +22,9 @@ export default function Landing() {
           <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Features
           </a>
-          <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <button className="text-sm font-medium hover:underline underline-offset-4" onClick={scrollToSection}>
             How It Works
-          </a>
+          </button>
           <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Pricing
           </a>
@@ -39,8 +46,8 @@ export default function Landing() {
                 </p>
               </div>
               <div className="space-x-4">
-                <Button className="p-3 px-4 rounded-md bg-black text-white">Start Tracking Now</Button>
-                <Button className="p-3 px-4 rounded-md bg-black text-white" variant="outline">Learn More</Button>
+                <Button className="p-3 px-4 rounded-md bg-black text-white"  onClick={()=>navigate('/sign')}>Start Tracking Now</Button>
+                <Button className="p-3 px-4 rounded-md bg-black text-white" variant="outline" onClick={scrollToSection} >Learn More</Button>
               </div>
             </div>
           </div>
@@ -69,7 +76,7 @@ export default function Landing() {
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">How It Works</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12" id="howitworks">How It Works</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">1</div>
