@@ -50,7 +50,7 @@ export default function Landing() {
                 </p>
               </div>
               <div className="space-y-4 sm:space-y-0 sm:space-x-4">
-                <Button className="w-full sm:w-auto" onClick={() => navigate('/sign')}>Start Tracking Now</Button>
+                <Button className="w-full sm:w-auto" onClick={() => navigate('/Route')}>Start Tracking Now</Button>
                 <Button variant="outline" className="w-full sm:w-auto" onClick={scrollToSection}>Learn More</Button>
               </div>
             </div>
