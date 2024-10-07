@@ -1,24 +1,28 @@
 import { Button } from "../@/components/ui/button"
-import { Input } from "../@/components/ui/input"
+// import { Input } from "../@/components/ui/input"
 import { MapPin, Clock, Bell, Smartphone, Menu } from "lucide-react"
-// import {Link} from "react-router-dom"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-export default function Landing() {
 
-  const navigate=useNavigate()
+export default function Landing() {
+  const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const scrollToSection = () => {
-    document.getElementById("howitworks")?.scrollIntoView({ behavior: 'smooth' });
-  };
+    document.getElementById("howitworks")?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
         <a className="flex items-center justify-center" href="#">
           <MapPin className="h-6 w-6 text-blue-600" />
           <span className="ml-2 text-2xl font-bold">BusTracker</span>
         </a>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <Menu className="h-6 w-6" />
+        </button>
+        <nav className={`${isMenuOpen ? 'flex' : 'hidden'} lg:flex flex-col lg:flex-row absolute lg:relative top-14 lg:top-0 left-0 right-0 bg-white lg:bg-transparent shadow-md lg:shadow-none z-50 lg:ml-auto gap-4 p-4 lg:p-0`}>
           <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
             Features
           </a>
@@ -45,9 +49,9 @@ export default function Landing() {
                   Real-time bus tracking for a smoother, more efficient commute. Know exactly when your bus will arrive.
                 </p>
               </div>
-              <div className="space-x-4">
-                <Button className="p-3 px-4 rounded-md bg-black text-white"  onClick={()=>navigate('/sign')}>Start Tracking Now</Button>
-                <Button className="p-3 px-4 rounded-md bg-black text-white" variant="outline" onClick={scrollToSection} >Learn More</Button>
+              <div className="space-y-4 sm:space-y-0 sm:space-x-4">
+                <Button className="w-full sm:w-auto" onClick={() => navigate('/sign')}>Start Tracking Now</Button>
+                <Button variant="outline" className="w-full sm:w-auto" onClick={scrollToSection}>Learn More</Button>
               </div>
             </div>
           </div>
@@ -74,9 +78,9 @@ export default function Landing() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-12 md:py-24 lg:py-32" id="howitworks">
           <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12" id="howitworks">How It Works</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">How It Works</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">1</div>
@@ -86,7 +90,7 @@ export default function Landing() {
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">2</div>
                 <h3 className="text-xl font-bold mb-2">Select Your Route</h3>
-                <p className="text-gray-500 dark:text-gray-400">Choose your bus route and stop .</p>
+                <p className="text-gray-500 dark:text-gray-400">Choose your bus route and stop.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">3</div>
@@ -106,7 +110,7 @@ export default function Landing() {
                 </p>
               </div>
               <div className="w-full max-w-sm space-y-2">
-                
+                <Button className="w-full" onClick={() => navigate('/sign')}>Sign Up Now</Button>
                 <p className="text-xs text-blue-100">
                   By signing up, you agree to our Terms of Service and Privacy Policy.
                 </p>
@@ -129,6 +133,3 @@ export default function Landing() {
     </div>
   )
 }
-
-
-
