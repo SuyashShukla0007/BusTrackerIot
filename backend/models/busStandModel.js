@@ -26,10 +26,24 @@ export const busStandSchema = new mongoose.Schema({
     }
   });
 
+  const newBusStandSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+      // unique: true
+    },
+    busStandId:{
+      type:String,
+      required:true,
+      unique:true
+   
+    }
+  });
+
   // Create a compound index for name and busStandNumber to be unique together
 //busStandSchema.index({ name: 1, busStandNumber: 1 }, { unique: true });
 
-  const busStand = new mongoose.model('BusStand', busStandSchema);
+  const busStand = new mongoose.model('BusStand', newBusStandSchema);
 
   export default busStand;
   

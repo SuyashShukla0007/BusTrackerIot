@@ -1,4 +1,5 @@
 import Bus from "../models/busModel.js";
+import BusStand from "../models/busStandModel.js";
 
 // add a bus
 export const addBus = async (req, res) => {
@@ -34,11 +35,13 @@ export const getBusByRoute = async (req, res) => {
 //mark arrival time at a partucular bus stand for a bus
 export const markBusStatus = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { busStandName, status } = req.body;
+       
+        const { busStandId, status ,busId } = req.body;
+
+        const busStandName=await BusStand.findOne({busStandId:busStandId});
 
         // Validate input
-        if (!id || !busStandName || !status) {
+        if (!busStandName || !status) {
             return res.status(400).json({ message: "Bus ID, bus stand name, and status are required" });
         }
 
@@ -46,12 +49,14 @@ export const markBusStatus = async (req, res) => {
             return res.status(400).json({ message: "Status must be either 'arrived' or 'departed'" });
         }
 
-        const bus = await Bus.findById(id);
+        const bus = await Bus.findOne({ busId: busId });
         if (!bus) {
             return res.status(404).json({ message: "Bus not found" });
-        }
+        }  
+        console.log(busStandName);
+        
 
-        const busStandIndex = bus.busStops.findIndex(stop => stop.busStandName === busStandName);
+        const busStandIndex = bus.busStops.findIndex(stop => stop.busStandName === busStandName.name);
         if (busStandIndex === -1) {
             return res.status(404).json({ message: "Bus stand not found for this bus" });
         }
@@ -67,7 +72,7 @@ export const markBusStatus = async (req, res) => {
         await bus.save();
 
         res.status(200).json({
-            message: `Bus ${status} time marked successfully for ${busStandName}`,
+            message: `Bus ${status} time marked successfully for ${busStandName.name}`,
             bus: bus
         });
     } catch (error) {
@@ -83,5 +88,23 @@ export const getBusById = async (req, res) => {
         res.status(200).json(bus);
     } catch (error) {
         res.status(404).json({ message: error.message });
+    }
+};
+
+
+//mark arrival and departure of each bus stand of a particular all busses null
+export const resetBusStatus = async (req, res) => {
+    try {
+        const buses = await Bus.find();
+        buses.forEach(async bus => {
+            bus.busStops.forEach(stop => {
+                stop.arrivalTime = null;
+                stop.departureTime = null;
+            });
+            await bus.save();
+        });
+        res.status(200).json({ message: "All bus statuses reset" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

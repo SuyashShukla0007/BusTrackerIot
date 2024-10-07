@@ -8,8 +8,8 @@ const busStandTimingSchema = new mongoose.Schema({
   },
   usualArrivalTime: { type: Date, required: true }, // Usual arrival time
   usualDepartureTime: { type: Date, required: true }, // Usual departure time
-  arrivalTime: { type: Date , default:0 }, // Actual arrival time
-  departureTime: { type: Date,default:0 }  // Actual departure time
+  arrivalTime: { type: Date , default:null }, // Actual arrival time
+  departureTime: { type: Date,default:null }  // Actual departure time
 });
 
 // Main bus schema
