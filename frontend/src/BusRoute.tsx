@@ -24,6 +24,7 @@ export default function BusRoute() {
   const [filteredDestinationStands, setFilteredDestinationStands] = useState<BusStand[]>([])
   const [availableBuses, setAvailableBuses] = useState([])
   const [Loading, setLoading] = useState(false)
+  const [correct, setCorrect] = useState(true)
   // Fetch bus stands once on component mount
   useEffect(() => {
     const fetchBusStands = async () => {
@@ -53,6 +54,8 @@ export default function BusRoute() {
   const fetchRoutes = async () => {
     try {
       if (!sourceValue.name || !destinationValue.name) {
+      setLoading(false)
+      setCorrect(false)
         console.error('Source and destination must be selected');
         return;
       }
@@ -60,6 +63,7 @@ export default function BusRoute() {
       const res = await axios.post('https://bus-tracker-murex.vercel.app/api/busRoute/getRouteId', body);
       fetchbuses(res.data.busRouteId);
     } catch (error) {
+      setLoading(false)
       console.error('Error fetching buses:', error);
     }
   }
@@ -201,7 +205,7 @@ export default function BusRoute() {
           Loading ? (
             <LoadingDots />
           ) : (
-            <p classname="text-2xl font-semibold">Add route to get buses.</p>
+            <p className="text-2xl flex font-semibold">Add  <p className={`${!correct?'text-red-600 mx-3 ':'hidden'}`}>correct</p>route to get buses.</p>
           )
          
         )}
