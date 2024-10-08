@@ -1,9 +1,7 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "../@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../@/components/ui/accordion";
 import { Bus, Clock, CheckCircle2, MapPin } from 'lucide-react';
-import { Tab } from '@headlessui/react';
 
 interface BusStop {
   busStandName: string;

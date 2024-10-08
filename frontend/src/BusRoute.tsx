@@ -22,7 +22,6 @@ export default function BusRoute() {
   const [filteredSourceStands, setFilteredSourceStands] = useState<BusStand[]>([])
   const [filteredDestinationStands, setFilteredDestinationStands] = useState<BusStand[]>([])
   const [availableBuses, setAvailableBuses] = useState([])
-  const [route, setRoute] = useState('')
 
   useEffect(() => {
     const fetch = () => {
@@ -51,7 +50,6 @@ export default function BusRoute() {
     try {
       const body = { source: sourceValue.name, destination: destinationValue.name }
       const res = await axios.post('https://bus-tracker-murex.vercel.app/api/busRoute/getRouteId', body)
-      setRoute(res.data.busRouteId)
       fetchbuses(res.data.busRouteId)
     } catch (error) {
       setAvailableBuses([])
