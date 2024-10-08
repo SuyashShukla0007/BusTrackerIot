@@ -23,17 +23,7 @@ export default function BusRoute() {
   const [filteredDestinationStands, setFilteredDestinationStands] = useState<BusStand[]>([])
   const [availableBuses, setAvailableBuses] = useState([])
 
-  useEffect(() => {
-    const fetch = () => {
-      handleSearch({ preventDefault: () => {} } as React.FormEvent);
-      console.log("fetching");
-    };
-
-    const intervalId = setInterval(fetch, 10000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
+  // Fetch bus stands once on component mount
   useEffect(() => {
     const fetchBusStands = async () => {
       try {
@@ -46,13 +36,23 @@ export default function BusRoute() {
     fetchBusStands()
   }, [])
 
+  // Function to fetch buses by route
+  const fetchbuses = async (route: string) => {
+    try {
+      const res = await axios.get(`https://bus-tracker-murex.vercel.app/api/bus/getBusByRoute/${route}`)
+      setAvailableBuses(res.data)
+    } catch (error) {
+      console.error('Error fetching buses:', error)
+    }
+  }
+
+  // Fetch route ID and then fetch buses based on route ID
   const fetchRoutes = async () => {
     try {
       if (!sourceValue.name || !destinationValue.name) {
         console.error('Source and destination must be selected');
         return;
       }
-      console.log(sourceValue.name, destinationValue.name);
       const body = { source: sourceValue.name, destination: destinationValue.name };
       const res = await axios.post('https://bus-tracker-murex.vercel.app/api/busRoute/getRouteId', body);
       fetchbuses(res.data.busRouteId);
@@ -60,16 +60,23 @@ export default function BusRoute() {
       console.error('Error fetching buses:', error);
     }
   }
+
+  // Fetch bus routes and buses every 10 seconds based on currently selected source and destination
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (sourceValue.name && destinationValue.name) {
+        console.log('Fetching buses...', sourceValue.name, destinationValue.name);
+        fetchRoutes();
+      }
+      else {
+        setAvailableBuses([])
+      }
+    }, 10000);
   
-  const fetchbuses = async (route: string) => {
-    try {
-      const res = await axios.get(`https://bus-tracker-murex.vercel.app/api/bus/getBusByRoute/${route}`)
-      setAvailableBuses(res.data)
-      console.log(res.data)
-    } catch (error) {
-      console.error('Error fetching buses:', error)
-    }
-  }
+
+
+    return () => clearInterval(intervalId); // Clean up the interval on unmount
+  }, [sourceValue, destinationValue]);
 
   useEffect(() => {
     setFilteredSourceStands(
@@ -87,6 +94,7 @@ export default function BusRoute() {
     )
   }, [destinationValue, busStands])
 
+  // Manual search triggered by form submission
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     fetchRoutes();
@@ -111,67 +119,66 @@ export default function BusRoute() {
           <form onSubmit={handleSearch} className="flex flex-col justify-center md:flex-row gap-2 md:gap-4 items-center">
             <Combobox value={sourceValue} onChange={(value: Source) => setSourceValue(value)}>
               <div className="relative flex-grow">
-              <Combobox.Input
-                className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter source station"
-                value={sourceValue?.name}
-                onChange={(event) => setSourceValue({ name: event.target.value })}
-              />
-              <Combobox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                {filteredSourceStands.map((stand) => (
-                <Combobox.Option
-                  key={stand.name}
-                  value={stand}
-                  className={({ active }) =>
-                  `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-white bg-blue-600' : 'text-gray-900'}`
-                  }
-                >
-                  {stand.name}
-                </Combobox.Option>
-                ))}
-              </Combobox.Options>
+                <Combobox.Input
+                  className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter source station"
+                  value={sourceValue?.name}
+                  onChange={(event) => setSourceValue({ name: event.target.value })}
+                />
+                <Combobox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                  {filteredSourceStands.map((stand) => (
+                    <Combobox.Option
+                      key={stand.name}
+                      value={stand}
+                      className={({ active }) =>
+                        `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-white bg-blue-600' : 'text-gray-900'}`
+                      }
+                    >
+                      {stand.name}
+                    </Combobox.Option>
+                  ))}
+                </Combobox.Options>
               </div>
             </Combobox>
 
             <button
               type="button"
-              className="bg-green-300 py-2 text-gray-800 font-bold  px-4 rounded inline-flex items-center"
+              className="bg-green-300 py-2 text-gray-800 font-bold px-4 rounded inline-flex items-center"
               onClick={() => {
-              const temp = sourceValue;
-              setSourceValue(destinationValue);
-              setDestinationValue(temp);
+                const temp = sourceValue;
+                setSourceValue(destinationValue);
+                setDestinationValue(temp);
               }}
             >
               <img src={img} alt="" className='h-4' />
-
             </button>
 
             <Combobox value={destinationValue} onChange={(value: Source) => setDestinationValue(value)}>
               <div className="relative flex-grow">
-              <Combobox.Input
-                className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter destination station"
-                value={destinationValue?.name}
-                onChange={(event) => setDestinationValue({ name: event.target.value })}
-              />
-              <Combobox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                {filteredDestinationStands.map((stand) => (
-                <Combobox.Option
-                  key={stand.name}
-                  value={stand}
-                  className={({ active }) =>
-                  `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-white bg-blue-600' : 'text-gray-900'}`
-                  }
-                >
-                  {stand.name}
-                </Combobox.Option>
-                ))}
-              </Combobox.Options>
+                <Combobox.Input
+                  className="w-full py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter destination station"
+                  value={destinationValue?.name}
+                  onChange={(event) => setDestinationValue({ name: event.target.value })}
+                />
+                <Combobox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                  {filteredDestinationStands.map((stand) => (
+                    <Combobox.Option
+                      key={stand.name}
+                      value={stand}
+                      className={({ active }) =>
+                        `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-white bg-blue-600' : 'text-gray-900'}`
+                      }
+                    >
+                      {stand.name}
+                    </Combobox.Option>
+                  ))}
+                </Combobox.Options>
               </div>
             </Combobox>
 
-            <Button type="submit" className="bg-orange-500  flex justify-center w-[120px] hover:bg-orange-600 px-4 md:w-auto">
-              <Search className="w-4items-center hidden lg:block justify-center text-center mr-4 " />
+            <Button type="submit" className="bg-orange-500 flex justify-center w-[120px] hover:bg-orange-600 px-4 md:w-auto">
+              <Search className="w-4 items-center hidden lg:block justify-center text-center mr-4" />
               Search Buses
             </Button>
           </form>
@@ -179,7 +186,7 @@ export default function BusRoute() {
       </div>
 
       <main className="flex-grow container mx-auto p-4">
-        {availableBuses.length>0  ? (
+        {availableBuses.length > 0 ? (
           <BusRouteInfo buses={availableBuses} />
         ) : (
           <p>No buses available for the selected route. Please try again.</p>
