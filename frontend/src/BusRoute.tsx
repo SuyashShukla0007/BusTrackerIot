@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Combobox } from '@headlessui/react'
 import { Bus, Menu, X, Search } from 'lucide-react'
 import BusRouteInfo from './BusRouteInfo'
+import LoadingDots from './Loading'
 
 interface Source {
   name: string;
@@ -22,7 +23,7 @@ export default function BusRoute() {
   const [filteredSourceStands, setFilteredSourceStands] = useState<BusStand[]>([])
   const [filteredDestinationStands, setFilteredDestinationStands] = useState<BusStand[]>([])
   const [availableBuses, setAvailableBuses] = useState([])
-
+  const [Loading, setLoading] = useState(false)
   // Fetch bus stands once on component mount
   useEffect(() => {
     const fetchBusStands = async () => {
@@ -41,6 +42,8 @@ export default function BusRoute() {
     try {
       const res = await axios.get(`https://bus-tracker-murex.vercel.app/api/bus/getBusByRoute/${route}`)
       setAvailableBuses(res.data)
+      
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching buses:', error)
     }
@@ -96,6 +99,8 @@ export default function BusRoute() {
 
   // Manual search triggered by form submission
   const handleSearch = (event: React.FormEvent) => {
+   
+    setLoading(true)
     event.preventDefault();
     fetchRoutes();
   }
@@ -148,6 +153,7 @@ export default function BusRoute() {
                 const temp = sourceValue;
                 setSourceValue(destinationValue);
                 setDestinationValue(temp);
+                
               }}
             >
               <img src={img} alt="" className='h-4' />
@@ -185,11 +191,19 @@ export default function BusRoute() {
         </div>
       </div>
 
-      <main className="flex-grow container mx-auto p-4">
+      <main className="flex-grow container my-0 mx-auto p-4">
         {availableBuses.length > 0 ? (
-          <BusRouteInfo buses={availableBuses} />
+          Loading ? (
+            <LoadingDots />
+          ) : (
+          <BusRouteInfo buses={availableBuses} />)
         ) : (
-          <p>No buses available for the selected route. Please try again.</p>
+          Loading ? (
+            <LoadingDots />
+          ) : (
+            <p>No buses available for the selected route. Please try again.</p>
+          )
+         
         )}
       </main>
 
