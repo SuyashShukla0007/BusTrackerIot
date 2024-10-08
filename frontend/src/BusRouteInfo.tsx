@@ -26,10 +26,20 @@ interface BusRouteInfoProps {
 }
 
 export default function BusRouteInfo({ buses }: BusRouteInfoProps) {
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string,check:string) => {
+
     if (dateString == null) {
-      return "-----";
-    }
+     
+    if(check=="arrived"){
+      return "Yet to arrive";
+  }
+
+  else if(check=="departed"){
+    return "Yet to depart";
+  }
+
+}
+
 
     const date = new Date(dateString);
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -74,7 +84,7 @@ export default function BusRouteInfo({ buses }: BusRouteInfoProps) {
                                   {stop.busStandName}
                                 </span>
                                 <div className="text-xs text-gray-500">
-                                  {formatTime(stop.usualArrivalTime)} - {formatTime(stop.usualDepartureTime)}
+                                  {formatTime(stop.arrivalTime,"arrived")} - {formatTime(stop.departureTime,"departed")}
                                 </div>
                               </div>
                             </li>
@@ -104,19 +114,19 @@ export default function BusRouteInfo({ buses }: BusRouteInfoProps) {
                           </TableCell>
                           <TableCell>
                           <Clock className="inline mr-1" size={16} />
-                          {formatTime(stop.usualArrivalTime)}
+                          {formatTime(stop.usualArrivalTime,"")}
                           </TableCell>
                           <TableCell>
                           <Clock className="inline mr-1" size={16} />
-                          {formatTime(stop.usualDepartureTime)}
+                          {formatTime(stop.usualDepartureTime,"")}
                           </TableCell>
                           <TableCell>
                           <Clock className="inline mr-1" size={16} />
-                          {formatTime(stop.arrivalTime)}
+                          {formatTime(stop.arrivalTime,"arrived")}
                           </TableCell>
                           <TableCell>
                           <Clock className="inline mr-1" size={16} />
-                          {formatTime(stop.departureTime)}
+                          {formatTime(stop.departureTime,"departed")}
                           </TableCell>
                         </TableRow>
                         ))}
