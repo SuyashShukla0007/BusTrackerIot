@@ -28,7 +28,7 @@ interface BusRouteInfoProps {
 export default function BusRouteInfo({ buses }: BusRouteInfoProps) {
   const formatTime = (dateString: string) => {
     if (dateString == null) {
-      return "yet to arrive";
+      return "-----";
     }
 
     const date = new Date(dateString);
@@ -74,7 +74,7 @@ export default function BusRouteInfo({ buses }: BusRouteInfoProps) {
                                   {stop.busStandName}
                                 </span>
                                 <div className="text-xs text-gray-500">
-                                  {formatTime(stop.arrivalTime)} - {formatTime(stop.departureTime)}
+                                  {formatTime(stop.usualArrivalTime)} - {formatTime(stop.usualDepartureTime)}
                                 </div>
                               </div>
                             </li>
