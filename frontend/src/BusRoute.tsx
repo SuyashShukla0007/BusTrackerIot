@@ -30,7 +30,7 @@ export default function BusRoute() {
       console.log("fetching");
     };
 
-    const intervalId = setInterval(fetch, 100000);
+    const intervalId = setInterval(fetch, 10000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -38,7 +38,7 @@ export default function BusRoute() {
   useEffect(() => {
     const fetchBusStands = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/busStand/all')
+        const res = await axios.get('https://bus-tracker-murex.vercel.app/api/busStand/all')
         setBusStands(res.data)
       } catch (error) {
         console.error('Error fetching bus stands:', error)
@@ -50,17 +50,18 @@ export default function BusRoute() {
   const fetchRoutes = async () => {
     try {
       const body = { source: sourceValue.name, destination: destinationValue.name }
-      const res = await axios.post('http://localhost:3000/api/busRoute/getRouteId', body)
+      const res = await axios.post('https://bus-tracker-murex.vercel.app/api/busRoute/getRouteId', body)
       setRoute(res.data.busRouteId)
       fetchbuses(res.data.busRouteId)
     } catch (error) {
+      setAvailableBuses([])
       console.error('Error fetching buses:', error)
     } 
   }
   
   const fetchbuses = async (route: string) => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/bus/getBusByRoute/${route}`)
+      const res = await axios.get(`https://bus-tracker-murex.vercel.app/api/bus/getBusByRoute/${route}`)
       setAvailableBuses(res.data)
       console.log(res.data)
     } catch (error) {
@@ -176,7 +177,7 @@ export default function BusRoute() {
       </div>
 
       <main className="flex-grow container mx-auto p-4">
-        {availableBuses.length > 0 ? (
+        {availableBuses.length>0  ? (
           <BusRouteInfo buses={availableBuses} />
         ) : (
           <p>No buses available for the selected route. Please try again.</p>
