@@ -51,7 +51,6 @@ export default function BusRoute() {
       const body = { source: sourceValue.name, destination: destinationValue.name }
       const res = await axios.post('https://bus-tracker-murex.vercel.app/api/busRoute/getRouteId', body)
       fetchbuses(res.data.busRouteId)
-   
     } catch (error) {
       console.error('Error fetching buses:', error)
     } 
