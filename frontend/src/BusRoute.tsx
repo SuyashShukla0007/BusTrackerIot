@@ -201,7 +201,7 @@ export default function BusRoute() {
           Loading ? (
             <LoadingDots />
           ) : (
-            <p>No buses available for the selected route. Please try again.</p>
+            <p classname="text-2xl font-semibold">Add route to get buses.</p>
           )
          
         )}
