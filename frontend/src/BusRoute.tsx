@@ -65,6 +65,7 @@ export default function BusRoute() {
      
     } catch (error) {
       setCorrect(false)
+      setAvailableBuses([])
       setLoading(false)
       console.error('Error fetching buses:', error);
     }
