@@ -208,7 +208,7 @@ export default function BusRoute() {
           Loading ? (
             <LoadingDots />
           ) : (
-            <p className="text-2xl flex font-semibold">Add  <p className={`${!correct?'text-red-600 mx-3 ':'hidden'}`}>correct</p>route to get buses.</p>
+           correct? (<p className='text-2xl '>Add route to get bus</p>):(<p className="text-center text-red-500">No buses found for the selected route</p>)
           )
          
         )}
